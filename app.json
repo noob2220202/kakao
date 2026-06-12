@@ -4,7 +4,6 @@
     "slug": "kakaobank-clone",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "scheme": "kakaobank",
     "userInterfaceStyle": "light",
     "splash": {
@@ -16,15 +15,9 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#FFEB00",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "backgroundColor": "#FFEB00"
       },
       "predictiveBackGestureEnabled": false
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
     },
     "plugins": ["expo-router"]
   }
