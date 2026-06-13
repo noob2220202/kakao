@@ -106,6 +106,7 @@ function AccountEditor({
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView style={styles.editorScroll}>
         <FieldRow label="계좌 이름" value={draft.name} onChange={(v) => set('name', v)} />
+        <FieldRow label="아바타 텍스트 (예: B, 준영, 🌱)" value={draft.avatarText ?? ''} onChange={(v) => setDraft((p) => ({ ...p, avatarText: v || undefined }))} placeholder="예: B" />
         <BankPicker value={draft.bank} onChange={(v) => setDraft((p) => ({ ...p, bank: v }))} />
         <FieldRow label="계좌번호" value={draft.accountNumber} onChange={(v) => set('accountNumber', v)} />
         <FieldRow

@@ -1,5 +1,3 @@
-// 스크린샷 기반 더미 데이터 (실제 API 연동 없음)
-
 export interface Account {
   id: string;
   name: string;
@@ -8,6 +6,7 @@ export interface Account {
   balance: number;
   color: 'beige' | 'yellow' | 'green';
   badge?: string;
+  avatarText?: string;
 }
 
 export interface Transaction {
@@ -31,6 +30,7 @@ export interface RecentRecipient {
   bank: string;
   accountNumber: string;
   bankColor: string;
+  starred?: boolean;
 }
 
 export const accounts: Account[] = [
@@ -41,6 +41,7 @@ export const accounts: Account[] = [
     accountNumber: '7777-03-3443370',
     balance: 762,
     color: 'beige',
+    avatarText: 'B',
   },
   {
     id: 'limit',
@@ -50,6 +51,7 @@ export const accounts: Account[] = [
     balance: 28911,
     color: 'yellow',
     badge: '한도계좌',
+    avatarText: '준영',
   },
   {
     id: 'nh',
@@ -58,6 +60,7 @@ export const accounts: Account[] = [
     accountNumber: '3521880213103',
     balance: 3163,
     color: 'green',
+    avatarText: '🌱',
   },
 ];
 
@@ -116,6 +119,20 @@ export const transactions: Transaction[] = [
     tag: '#캐시백',
     type: '캐시백',
   },
+  {
+    id: 'tx5',
+    accountId: 'mini',
+    merchant: 'GS25 순천점',
+    date: '2026-06-12',
+    time: '09:20',
+    dateTime: '2026.06.12 09:20:11',
+    amount: -2400,
+    balanceAfter: 762,
+    tag: '#체크카드',
+    type: '체크카드결제',
+    cardInfo: '카카오뱅크 체크카드 (8812)',
+    address: '전남 순천시 연향동 25',
+  },
 ];
 
 export const myAccounts: RecentRecipient[] = [
@@ -149,6 +166,7 @@ export const recentRecipients: RecentRecipient[] = [
     bank: '농협',
     accountNumber: '64102460618',
     bankColor: '#3FA45C',
+    starred: true,
   },
   {
     id: 'r2',
@@ -156,6 +174,7 @@ export const recentRecipients: RecentRecipient[] = [
     bank: '국민',
     accountNumber: '95759073983842',
     bankColor: '#8A7E6E',
+    starred: false,
   },
   {
     id: 'r3',
@@ -163,9 +182,15 @@ export const recentRecipients: RecentRecipient[] = [
     bank: '카카오뱅크',
     accountNumber: '7777-02-6354952',
     bankColor: '#FFEB00',
+    starred: false,
   },
 ];
 
 export function formatWon(amount: number): string {
+  const abs = Math.abs(amount);
+  return `${amount < 0 ? '-' : ''}${abs.toLocaleString('ko-KR')}원`;
+}
+
+export function formatWonPlain(amount: number): string {
   return `${amount.toLocaleString('ko-KR')}원`;
 }
