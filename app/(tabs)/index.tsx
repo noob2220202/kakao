@@ -47,7 +47,7 @@ function AccountCard({ account }: { account: Account }) {
 
   return (
     <Link href={`/account/${account.id}`} asChild>
-      <Pressable style={[styles.accountCard, { backgroundColor: theme.bg }]}>
+      <Pressable style={StyleSheet.flatten([styles.accountCard, { backgroundColor: theme.bg }])}>
         <View style={styles.cardHeader}>
           <View style={styles.cardTitleRow}>
             {account.avatarText ? (
@@ -118,7 +118,6 @@ export default function HomeScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* 헤더 */}
         <View style={styles.header}>
           <Pressable onPress={handleNameTap} hitSlop={8}>
             <Text style={styles.userName}>{data.userName}</Text>
@@ -133,7 +132,6 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* AI 분석 배너 */}
         <Pressable style={styles.aiBanner}>
           <View style={styles.aiLeft}>
             <View style={styles.aiDot} />
@@ -142,12 +140,10 @@ export default function HomeScreen() {
           <Ionicons name="chevron-forward" size={15} color={colors.textTertiary} />
         </Pressable>
 
-        {/* 계좌 카드 목록 */}
         {data.accounts.map((account) => (
           <AccountCard key={account.id} account={account} />
         ))}
 
-        {/* T머니 카드 */}
         <View style={styles.tmoneyCard}>
           <View style={styles.tmoneyLeft}>
             <View style={styles.tmoneyCircle}>
@@ -168,29 +164,23 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* 빠른 서비스 */}
         <View style={styles.quickCard}>
           <Pressable style={styles.quickItem}>
-            <View style={styles.quickIcon}>
-              <Ionicons name="id-card-outline" size={20} color={colors.textPrimary} />
-            </View>
+            <Ionicons name="id-card-outline" size={20} color={colors.textPrimary} />
             <Text style={styles.quickLabel}>모바일 신분증</Text>
           </Pressable>
           <View style={styles.quickDivider} />
           <Pressable style={styles.quickItem}>
-            <View style={styles.quickIcon}>
-              <Ionicons name="wallet-outline" size={20} color={colors.textPrimary} />
-            </View>
+            <Ionicons name="wallet-outline" size={20} color={colors.textPrimary} />
             <Text style={styles.quickLabel}>내 계좌</Text>
           </Pressable>
           <View style={styles.quickDivider} />
-          <Pressable style={[styles.quickItem, { flex: 1.4 }]}>
+          <Pressable style={StyleSheet.flatten([styles.quickItem, { flex: 1.4 }])}>
             <Text style={styles.quickLabel}>전체 서비스 보기</Text>
             <Ionicons name="chevron-forward" size={14} color={colors.textTertiary} />
           </Pressable>
         </View>
 
-        {/* 이체 버튼 */}
         <Link href="/transfer" asChild>
           <Pressable style={styles.transferBtn}>
             <Ionicons name="swap-horizontal-outline" size={18} color={colors.textPrimary} style={{ marginRight: 6 }} />
@@ -198,7 +188,6 @@ export default function HomeScreen() {
           </Pressable>
         </Link>
 
-        {/* 혜택 배너 */}
         <View style={styles.promoBanner}>
           <View style={styles.promoBannerLeft}>
             <Text style={styles.promoTag}>혜택</Text>
@@ -219,8 +208,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: colors.background },
   scrollContent: { paddingBottom: 32 },
-
-  // 헤더
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -232,8 +219,6 @@ const styles = StyleSheet.create({
   userName: { fontSize: fontSize.xl, fontWeight: '700', color: colors.textPrimary },
   headerIcons: { flexDirection: 'row', gap: 4 },
   iconBtn: { padding: 8 },
-
-  // AI 배너
   aiBanner: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -253,8 +238,6 @@ const styles = StyleSheet.create({
   aiLeft: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   aiDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.aiGreen },
   aiBannerText: { fontSize: fontSize.sm, color: colors.textPrimary, fontWeight: '500' },
-
-  // 계좌 카드
   accountCard: {
     marginHorizontal: 16,
     marginBottom: 10,
@@ -268,13 +251,7 @@ const styles = StyleSheet.create({
   },
   cardHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 },
   cardTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 },
-  avatarCircle: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  avatarCircle: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center' },
   avatarText: { fontWeight: '700' },
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' },
   cardName: { fontSize: fontSize.md, fontWeight: '600' },
@@ -282,15 +259,11 @@ const styles = StyleSheet.create({
   badgePill: { backgroundColor: 'rgba(0,0,0,0.55)', borderRadius: radius.full, paddingHorizontal: 7, paddingVertical: 2 },
   badgeText: { fontSize: 10, color: '#FFFFFF', fontWeight: '600' },
   starBtn: { paddingLeft: 8, paddingTop: 2 },
-
   cardBalance: { fontSize: fontSize.xxl, fontWeight: '700', marginBottom: 4 },
   cardNumber: { fontSize: fontSize.xs, marginBottom: 16, letterSpacing: 0.3 },
-
   chipRow: { flexDirection: 'row', gap: 8 },
   chip: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: radius.full },
   chipText: { fontSize: fontSize.sm, fontWeight: '600' },
-
-  // T머니
   tmoneyCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -314,8 +287,6 @@ const styles = StyleSheet.create({
   tmoneyChips: { flexDirection: 'row', gap: 8 },
   tmoneyChip: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: radius.full, backgroundColor: colors.chipBackground },
   tmoneyChipText: { fontSize: fontSize.sm, fontWeight: '600', color: colors.textPrimary },
-
-  // 빠른 서비스
   quickCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -331,11 +302,8 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   quickItem: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 16 },
-  quickIcon: {},
   quickLabel: { fontSize: fontSize.xs, color: colors.textPrimary, fontWeight: '500' },
   quickDivider: { width: 1, height: 20, backgroundColor: colors.divider },
-
-  // 이체 버튼
   transferBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -347,8 +315,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
   },
   transferBtnText: { fontSize: fontSize.md, fontWeight: '700', color: colors.textPrimary },
-
-  // 프로모 배너
   promoBanner: {
     flexDirection: 'row',
     alignItems: 'center',

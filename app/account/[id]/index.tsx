@@ -37,9 +37,8 @@ export default function AccountDetailScreen() {
   const chipBg = account.color === 'green' ? 'rgba(255,255,255,0.22)' : 'rgba(0,0,0,0.12)';
 
   return (
-    <SafeAreaView style={[styles.safeArea]} edges={['top']}>
-      {/* 컬러 히어로 헤더 */}
-      <View style={[styles.heroArea, { backgroundColor: bg }]}>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <View style={StyleSheet.flatten([styles.heroArea, { backgroundColor: bg }])}>
         <View style={styles.heroHeader}>
           <Pressable onPress={() => router.back()} hitSlop={8}>
             <Ionicons name="chevron-back" size={26} color={textColor} />
@@ -58,24 +57,22 @@ export default function AccountDetailScreen() {
 
         <View style={styles.heroActions}>
           <Link href="/transfer" asChild>
-            <Pressable style={[styles.heroChip, { backgroundColor: chipBg }]}>
+            <Pressable style={StyleSheet.flatten([styles.heroChip, { backgroundColor: chipBg }])}>
               <Text style={[styles.heroChipText, { color: textColor }]}>이체하기</Text>
             </Pressable>
           </Link>
-          <Pressable style={[styles.heroChip, { backgroundColor: chipBg }]}>
+          <Pressable style={StyleSheet.flatten([styles.heroChip, { backgroundColor: chipBg }])}>
             <Text style={[styles.heroChipText, { color: textColor }]}>채우기</Text>
           </Pressable>
           {account.bank === '카카오뱅크' && (
-            <Pressable style={[styles.heroChip, { backgroundColor: chipBg }]}>
+            <Pressable style={StyleSheet.flatten([styles.heroChip, { backgroundColor: chipBg }])}>
               <Text style={[styles.heroChipText, { color: textColor }]}>카드</Text>
             </Pressable>
           )}
         </View>
       </View>
 
-      {/* 본문 */}
       <ScrollView style={styles.body} contentContainerStyle={styles.bodyContent} showsVerticalScrollIndicator={false}>
-        {/* AI 프롬프트 */}
         <View style={styles.aiCard}>
           <View style={styles.aiIconWrap}>
             <View style={styles.aiDot} />
@@ -87,7 +84,6 @@ export default function AccountDetailScreen() {
           <Ionicons name="chevron-forward" size={16} color={colors.textTertiary} />
         </View>
 
-        {/* 최근 거래 */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>최근 거래</Text>
@@ -129,7 +125,6 @@ export default function AccountDetailScreen() {
           )}
         </View>
 
-        {/* 계좌 정보 */}
         <View style={styles.infoCard}>
           <Text style={styles.infoTitle}>계좌 정보</Text>
           <InfoRow label="은행" value={account.bank} />
@@ -152,7 +147,6 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: colors.background },
-
   heroArea: { paddingTop: 4, paddingBottom: 24, paddingHorizontal: 20 },
   heroHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10 },
   heroAccountName: { fontSize: fontSize.md, fontWeight: '600' },
@@ -163,10 +157,8 @@ const styles = StyleSheet.create({
   heroActions: { flexDirection: 'row', gap: 10 },
   heroChip: { paddingHorizontal: 18, paddingVertical: 9, borderRadius: radius.full },
   heroChipText: { fontSize: fontSize.sm, fontWeight: '600' },
-
   body: { flex: 1 },
   bodyContent: { padding: 16, gap: 12, paddingBottom: 40 },
-
   aiCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -184,15 +176,12 @@ const styles = StyleSheet.create({
   aiDot: { width: 12, height: 12, borderRadius: 6, backgroundColor: colors.aiGreen },
   aiTitle: { fontSize: fontSize.sm, fontWeight: '700', color: colors.textPrimary, marginBottom: 2 },
   aiDesc: { fontSize: fontSize.xs, color: colors.textSecondary },
-
   section: { backgroundColor: colors.white, borderRadius: radius.lg, overflow: 'hidden' },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 },
   sectionTitle: { fontSize: fontSize.md, fontWeight: '700', color: colors.textPrimary },
   sectionMore: { fontSize: fontSize.sm, color: colors.textTertiary },
-
   emptyTx: { paddingVertical: 32, alignItems: 'center' },
   emptyTxText: { fontSize: fontSize.sm, color: colors.textTertiary },
-
   txRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -208,7 +197,6 @@ const styles = StyleSheet.create({
   txAmounts: { alignItems: 'flex-end' },
   txAmount: { fontSize: fontSize.md, fontWeight: '700' },
   txBalance: { fontSize: fontSize.xs, color: colors.textTertiary, marginTop: 3 },
-
   infoCard: { backgroundColor: colors.white, borderRadius: radius.lg, padding: 16 },
   infoTitle: { fontSize: fontSize.md, fontWeight: '700', color: colors.textPrimary, marginBottom: 12 },
   infoRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.divider },
