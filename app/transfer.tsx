@@ -17,16 +17,31 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: 'mine', label: '내 계좌' },
 ];
 
-function BankCircle({ bank }: { bank: string }) {
+function maskAccountNumber(num: string): string {
+  if (num.length <= 4) return num;
+  return num.slice(0, -4).replace(/\d/g, '*') + num.slice(-4);
+}
+
+function BankAvatar({ bank, size = 52 }: { bank: string; size?: number }) {
   const bg = getBankColor(bank);
-  const text = getBankTextColor(bank);
+  const textColor = getBankTextColor(bank);
   const short = getBankShortName(bank);
   return (
-    <View style={[styles.bankCircle, { backgroundColor: bg }]}>
-      <Text style={[styles.bankCircleText, { color: text }]} numberOfLines={1} adjustsFontSizeToFit>
+    <View style={[styles.bankAvatarCircle, { backgroundColor: bg, width: size, height: size, borderRadius: size / 2 }]}>
+      <Text style={[styles.bankAvatarText, { color: textColor }]} adjustsFontSizeToFit numberOfLines={1}>
         {short}
       </Text>
     </View>
+  );
+}
+
+function RecipientCircle({ recipient }: { recipient: RecentRecipient }) {
+  return (
+    <Pressable style={styles.circleItem}>
+      <BankAvatar bank={recipient.bank} size={54} />
+      <Text style={styles.circleName} numberOfLines={1}>{recipient.name}</Text>
+      <Text style={styles.circleBank} numberOfLines={1}>{recipient.bank}</Text>
+    </Pressable>
   );
 }
 
@@ -35,26 +50,25 @@ function RecipientRow({
   onToggleStar,
 }: {
   recipient: RecentRecipient;
-  onToggleStar: (id: string) => void;
+  onToggleStar?: (id: string) => void;
 }) {
-  const masked = recipient.accountNumber.length > 8
-    ? `${recipient.accountNumber.slice(0, -4).replace(/\d/g, '*')}${recipient.accountNumber.slice(-4)}`
-    : recipient.accountNumber;
-
+  const masked = maskAccountNumber(recipient.accountNumber);
   return (
     <Pressable style={styles.recipientRow}>
-      <BankCircle bank={recipient.bank} />
+      <BankAvatar bank={recipient.bank} size={44} />
       <View style={styles.recipientInfo}>
         <Text style={styles.recipientName}>{recipient.name}</Text>
         <Text style={styles.recipientMeta}>{recipient.bank} {masked}</Text>
       </View>
-      <Pressable onPress={() => onToggleStar(recipient.id)} hitSlop={10}>
-        <Ionicons
-          name={recipient.starred ? 'star' : 'star-outline'}
-          size={20}
-          color={recipient.starred ? '#FFCE00' : colors.textTertiary}
-        />
-      </Pressable>
+      {onToggleStar && (
+        <Pressable onPress={() => onToggleStar(recipient.id)} hitSlop={12}>
+          <Ionicons
+            name={recipient.starred ? 'star' : 'star-outline'}
+            size={20}
+            color={recipient.starred ? '#FFCE00' : colors.textTertiary}
+          />
+        </Pressable>
+      )}
     </Pressable>
   );
 }
@@ -66,9 +80,7 @@ export default function TransferScreen() {
 
   const toggleStar = (id: string) => {
     setRecentRecipients(
-      data.recentRecipients.map((r) =>
-        r.id === id ? { ...r, starred: !r.starred } : r,
-      ),
+      data.recentRecipients.map((r) => (r.id === id ? { ...r, starred: !r.starred } : r)),
     );
   };
 
@@ -81,12 +93,11 @@ export default function TransferScreen() {
 
   const filtered = query.trim()
     ? currentList.filter(
-        (r) =>
-          r.name.includes(query) ||
-          r.bank.includes(query) ||
-          r.accountNumber.includes(query),
+        (r) => r.name.includes(query) || r.bank.includes(query) || r.accountNumber.includes(query),
       )
     : currentList;
+
+  const isSearching = query.trim().length > 0;
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
@@ -104,7 +115,7 @@ export default function TransferScreen() {
         <Ionicons name="search-outline" size={18} color={colors.textTertiary} style={{ marginRight: 8 }} />
         <TextInput
           style={styles.searchInput}
-          placeholder="계좌번호 또는 이름 입력"
+          placeholder="계좌번호, 이름으로 검색"
           placeholderTextColor={colors.textTertiary}
           value={query}
           onChangeText={setQuery}
@@ -124,30 +135,52 @@ export default function TransferScreen() {
             style={[styles.tab, activeTab === key && styles.tabActive]}
             onPress={() => setActiveTab(key)}
           >
-            <Text style={[styles.tabText, activeTab === key && styles.tabTextActive]}>
-              {label}
-            </Text>
+            <Text style={[styles.tabText, activeTab === key && styles.tabTextActive]}>{label}</Text>
           </Pressable>
         ))}
       </View>
 
-      {/* 목록 */}
       <ScrollView style={styles.list} keyboardShouldPersistTaps="handled">
         {filtered.length === 0 ? (
           <View style={styles.emptyBox}>
             <Ionicons name="people-outline" size={40} color={colors.textTertiary} />
-            <Text style={styles.emptyText}>
-              {query ? '검색 결과가 없어요' : '이체 내역이 없어요'}
-            </Text>
+            <Text style={styles.emptyText}>{isSearching ? '검색 결과가 없어요' : '이체 내역이 없어요'}</Text>
           </View>
         ) : (
-          filtered.map((r) => (
-            <RecipientRow
-              key={r.id}
-              recipient={r}
-              onToggleStar={activeTab === 'mine' ? () => {} : toggleStar}
-            />
-          ))
+          <>
+            {/* 가로 스크롤 원형 아이콘 (검색 중 아닐 때) */}
+            {!isSearching && (
+              <View style={styles.circleSection}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.circleScrollContent}
+                >
+                  {filtered.map((r) => (
+                    <RecipientCircle key={r.id} recipient={r} />
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+
+            {/* 전체 목록 헤더 */}
+            {!isSearching && (
+              <View style={styles.listDivider}>
+                <Text style={styles.listDividerText}>전체 목록</Text>
+              </View>
+            )}
+
+            {/* 상세 리스트 */}
+            {filtered.map((r) => (
+              <RecipientRow
+                key={r.id}
+                recipient={r}
+                onToggleStar={activeTab === 'mine' ? undefined : toggleStar}
+              />
+            ))}
+
+            <View style={{ height: 20 }} />
+          </>
         )}
       </ScrollView>
     </SafeAreaView>
@@ -187,24 +220,49 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.divider,
     paddingHorizontal: 16,
   },
-  tab: { flex: 1, alignItems: 'center', paddingVertical: 13, borderBottomWidth: 2, borderBottomColor: 'transparent' },
+  tab: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 13,
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
+  },
   tabActive: { borderBottomColor: colors.textPrimary },
   tabText: { fontSize: fontSize.sm, color: colors.textTertiary, fontWeight: '500' },
   tabTextActive: { color: colors.textPrimary, fontWeight: '700' },
 
   list: { flex: 1 },
 
+  circleSection: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.divider,
+    backgroundColor: colors.white,
+  },
+  circleScrollContent: { paddingHorizontal: 16, paddingTop: 20, paddingBottom: 16, gap: 4 },
+  circleItem: { alignItems: 'center', width: 74, marginRight: 4 },
+  bankAvatarCircle: { alignItems: 'center', justifyContent: 'center' },
+  bankAvatarText: { fontSize: 11, fontWeight: '700', textAlign: 'center', paddingHorizontal: 3 },
+  circleName: { fontSize: 12, fontWeight: '500', color: colors.textPrimary, textAlign: 'center', marginTop: 7, maxWidth: 70 },
+  circleBank: { fontSize: 10, color: colors.textTertiary, textAlign: 'center', marginTop: 1 },
+
+  listDivider: {
+    paddingHorizontal: 20,
+    paddingTop: 18,
+    paddingBottom: 8,
+    backgroundColor: colors.background,
+  },
+  listDividerText: { fontSize: fontSize.xs, fontWeight: '600', color: colors.textSecondary },
+
   recipientRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 14,
+    paddingVertical: 13,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.divider,
+    backgroundColor: colors.white,
   },
-  bankCircle: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', marginRight: 14 },
-  bankCircleText: { fontSize: 11, fontWeight: '700', textAlign: 'center' },
-  recipientInfo: { flex: 1 },
+  recipientInfo: { flex: 1, marginLeft: 14 },
   recipientName: { fontSize: fontSize.md, fontWeight: '600', color: colors.textPrimary },
   recipientMeta: { fontSize: fontSize.xs, color: colors.textTertiary, marginTop: 3 },
 

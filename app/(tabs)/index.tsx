@@ -76,6 +76,7 @@ function AccountCard({ account }: { account: Account }) {
           </Pressable>
         </View>
 
+        <Text style={[styles.cardBalanceLabel, { color: theme.sub }]}>잔액</Text>
         <Text style={[styles.cardBalance, { color: theme.text }]}>{formatWonPlain(account.balance)}</Text>
         <Text style={[styles.cardNumber, { color: theme.sub }]}>{account.accountNumber}</Text>
 
@@ -120,7 +121,7 @@ export default function HomeScreen() {
       >
         <View style={styles.header}>
           <Pressable onPress={handleNameTap} hitSlop={8}>
-            <Text style={styles.userName}>{data.userName}</Text>
+            <Text style={styles.userName}>{data.userName}님</Text>
           </Pressable>
           <View style={styles.headerIcons}>
             <Pressable style={styles.iconBtn}>
@@ -143,6 +144,12 @@ export default function HomeScreen() {
         {data.accounts.map((account) => (
           <AccountCard key={account.id} account={account} />
         ))}
+
+        {/* 계좌 연결하기 */}
+        <Pressable style={styles.addAccountBtn}>
+          <Ionicons name="add-circle-outline" size={20} color={colors.textSecondary} />
+          <Text style={styles.addAccountText}>계좌 연결하기</Text>
+        </Pressable>
 
         <View style={styles.tmoneyCard}>
           <View style={styles.tmoneyLeft}>
@@ -259,7 +266,8 @@ const styles = StyleSheet.create({
   badgePill: { backgroundColor: 'rgba(0,0,0,0.55)', borderRadius: radius.full, paddingHorizontal: 7, paddingVertical: 2 },
   badgeText: { fontSize: 10, color: '#FFFFFF', fontWeight: '600' },
   starBtn: { paddingLeft: 8, paddingTop: 2 },
-  cardBalance: { fontSize: fontSize.xxl, fontWeight: '700', marginBottom: 4 },
+  cardBalanceLabel: { fontSize: 12, marginBottom: 3 },
+  cardBalance: { fontSize: fontSize.xxl, fontWeight: '800', marginBottom: 4 },
   cardNumber: { fontSize: fontSize.xs, marginBottom: 16, letterSpacing: 0.3 },
   chipRow: { flexDirection: 'row', gap: 8 },
   chip: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: radius.full },
@@ -330,4 +338,19 @@ const styles = StyleSheet.create({
   promoTitle: { fontSize: fontSize.md, fontWeight: '700', color: colors.textPrimary, marginBottom: 4 },
   promoDesc: { fontSize: fontSize.xs, color: colors.textSecondary },
   promoEmoji: { marginLeft: 12 },
+
+  addAccountBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginHorizontal: 16,
+    marginBottom: 10,
+    paddingVertical: 14,
+    borderRadius: radius.xl,
+    borderWidth: 1,
+    borderColor: colors.divider,
+    backgroundColor: colors.white,
+  },
+  addAccountText: { fontSize: fontSize.sm, color: colors.textSecondary, fontWeight: '500' },
 });
